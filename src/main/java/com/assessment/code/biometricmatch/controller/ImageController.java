@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,11 +21,13 @@ import com.assessment.code.biometricmatch.model.UploadResponse;
 import com.assessment.code.biometricmatch.service.FileStorageService;
 import com.assessment.code.biometricmatch.service.MatchingService;
 
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
+@Api(value = "biometric", tags = {"biometric Endpoints"})
 @RequestMapping("/biometric")
 public class ImageController {
 	
@@ -37,6 +40,18 @@ public class ImageController {
 		this.matchingService = matchingService;
 		this.fileStorageService = fileStorageService;
 	}
+	
+	 @GetMapping("/hello/{name}")
+	 @ApiOperation(value = "Hello world test",
+     notes = "Returns a 200 when successful.")
+	 public String hello(@PathVariable("name") String name) {
+	        log.info("I am here...");
+	        String response = null;
+	        response = (name != null && !name.isBlank()&& !name.isEmpty()) ?
+	        		"Hello " + name:
+	        		"Hello World!";
+	        return response;
+	 }
 	
 	/*@PostMapping(path="/images", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	@ApiOperation(value = "Uploads images for matching",
