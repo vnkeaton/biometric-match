@@ -53,7 +53,7 @@ public class ImageController {
 	 public String hello(@PathVariable("name") String name) {
 	        log.info("I am here...");
 	        String response = null;
-	        response = (name != null && !name.isBlank()&& !name.isEmpty()) ?
+	        response = (name != null && !name.isEmpty()) ?
 	        		"Hello " + name:
 	        		"Hello World!";
 	        return response;
