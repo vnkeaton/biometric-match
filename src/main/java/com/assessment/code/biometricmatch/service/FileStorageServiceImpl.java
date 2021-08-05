@@ -2,6 +2,8 @@ package com.assessment.code.biometricmatch.service;
 
 import java.io.IOException;
 import java.math.BigInteger;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.assessment.code.biometricmatch.exception.FileNotFoundException;
 import com.assessment.code.biometricmatch.exception.FileStorageException;
+import com.assessment.code.biometricmatch.model.UploadResponse;
 import com.assessment.code.biometricmatch.model.IDSLImageModel;
 import com.assessment.code.biometricmatch.repository.IDSLImageRepository;
 
@@ -46,7 +49,6 @@ public class FileStorageServiceImpl implements FileStorageService{
 	        }
 	    }
 	    
-
 		@Override
 		public IDSLImageModel getFile(String fileName) {
 			log.info("get file: " + fileName);
@@ -56,5 +58,24 @@ public class FileStorageServiceImpl implements FileStorageService{
 				throw new FileNotFoundException("File not found: " + fileName);
 			}
 			return image;
+		}
+		
+		@Override
+		public Map<String, Boolean> removeFile(String fileName) {
+			log.info("remove file: " + fileName);
+			IDSLImageModel image = null;
+			image = getFile(fileName);
+			if (image == null) {
+				throw new FileNotFoundException("File not found: " + fileName);
+			}
+			try {
+				imageRepository.delete(image);
+			}
+			catch(Exception e) {
+				throw new FileStorageException("Trouble removing file: " + fileName);
+			}
+		    Map<String, Boolean> response = new HashMap<>();
+		    response.put("File Deleted Successfully, fileName: " + fileName, Boolean.TRUE);
+		    return response;
 		}
 }

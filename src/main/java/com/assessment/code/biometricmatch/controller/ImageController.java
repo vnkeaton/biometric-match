@@ -2,6 +2,7 @@ package com.assessment.code.biometricmatch.controller;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,6 +13,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,8 +21,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.assessment.code.biometricmatch.exception.FileNotFoundException;
 import com.assessment.code.biometricmatch.model.IDSLImageModel;
 import com.assessment.code.biometricmatch.model.MatchResponse;
 import com.assessment.code.biometricmatch.model.UploadResponse;
@@ -99,7 +101,7 @@ public class ImageController {
 	   }
 	   
 	   @GetMapping("/downloadFile/{fileName}")
-	   @ApiOperation(value = "Download images",
+	   @ApiOperation(value = "Download image",
 		              notes = "Returns a 200 when successful.",
 		              consumes = MediaType.IMAGE_PNG_VALUE)
 	   public ResponseEntity<Resource> downloadFile(@PathVariable String fileName, HttpServletRequest request) {
@@ -110,6 +112,15 @@ public class ImageController {
 	                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + image.getFileName() + "\"")
 	                .body(new ByteArrayResource(image.getData()));
 	    }   
+	   
+	   @DeleteMapping("/removeFile/{fileName}")
+	   @ApiOperation(value = "remove image",
+                     notes = "Returns a 200 when successful.")
+	   public Map<String, Boolean> deleteile(@PathVariable(value = "fileName") String fileName)
+	                                          throws FileNotFoundException {
+	       log.info("delete filename: " + fileName);
+	       return fileStorageService.removeFile(fileName);
+	   }
 	   
 	   //TODO  Add Put and Delete to finish out CRUD functions
 }

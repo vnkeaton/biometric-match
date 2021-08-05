@@ -70,7 +70,7 @@ class ImageControllerTest {
     public void test_downloadFile_success() throws Exception {
        RequestBuilder requestBuilder = MockMvcRequestBuilders
 			.get("/downloadFile/1.png")
-			.accept(MediaType.APPLICATION_OCTET_STREAM);
+			.accept(MediaType.IMAGE_PNG_VALUE);
 	   MvcResult result = mockMvc.perform(requestBuilder).andReturn();
 	   MockHttpServletResponse response = result.getResponse();
 
@@ -78,5 +78,16 @@ class ImageControllerTest {
     }
     
   //TODO need tests for download exceptions
+    
+    @Test
+    public void test_removeFile_success() throws Exception {
+       RequestBuilder requestBuilder = MockMvcRequestBuilders
+			.get("/removeFile/1.png")
+			.accept(MediaType.IMAGE_PNG_VALUE);
+	   MvcResult result = mockMvc.perform(requestBuilder).andReturn();
+	   MockHttpServletResponse response = result.getResponse();
+
+	   assertEquals(HttpStatus.OK.value(), response.getStatus());
+    }
 
 }
