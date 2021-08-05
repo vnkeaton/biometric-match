@@ -7,7 +7,6 @@ import com.assessment.code.biometricmatch.model.IDSLImageModel;
 
 public interface FileStorageService {
 
-	Resource loadFileAsResource(String fileName);
-	String storeFile(MultipartFile file);
 	IDSLImageModel storeFileToDatabase(MultipartFile file);
+	IDSLImageModel getFile(String fileName);
 }

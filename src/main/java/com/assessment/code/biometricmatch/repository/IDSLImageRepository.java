@@ -7,5 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.assessment.code.biometricmatch.model.IDSLImageModel;
 
 public interface IDSLImageRepository extends JpaRepository<IDSLImageModel, String> {
-	//Optional<IDSLImageModel> findByName(String name);
+
+	IDSLImageModel findByFileName(String fileName);
+	//Optional<IDSLImageModel> findByFileName(String fileName);
 }

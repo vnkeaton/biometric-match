@@ -4,8 +4,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -52,76 +58,23 @@ public class ImageController {
 	        		"Hello World!";
 	        return response;
 	 }
-	
-	/*@PostMapping(path="/images", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	@ApiOperation(value = "Uploads images for matching",
-				  notes = "Returns a 201 when successful.  Will overwrite pre-existing files with the same name.",
-				  consumes = MediaType.IMAGE_PNG_VALUE)
-	public ResponseEntity<ImageResponse> uploadImages(
-								 @RequestPart("file1") MultipartFile file1,
-								 @RequestPart("file2") MultipartFile file2) throws IOException{
-		log.info("Uploading file1 " + file1.getName()  + ".");
-		ImageResponse response = matchingService.compareImages(file1, file2);
-		return new ResponseEntity<ImageResponse>(response, HttpStatus.OK);
-	}*/
-	
-	 /*@PostMapping("/uploadFile")
-	 public UploadResponse uploadFile(@RequestParam("file") MultipartFile file) {
-	        String fileName = fileStorageService.storeFile(file);
-
-	        String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-	                .path("/downloadFile/")
-	                .path(fileName)
-	                .toUriString();
-
-	        return new UploadResponse(fileName, fileDownloadUri,
-	                file.getContentType(), file.getSize());
-	  }
-
-	  @PostMapping("/uploadMultipleFiles")
-	  public List<UploadResponse> uploadMultipleFiles(@RequestParam("files") MultipartFile[] files) {
-	        return Arrays.asList(files)
-	                .stream()
-	                .map(file -> uploadFile(file))
-	                .collect(Collectors.toList());
-	  }*/
-	    
-	  @ApiOperation(value = "Uploads an image",
+	 
+	 @PostMapping("/uploadFile")   
+	 @ApiOperation(value = "Uploads an image",
 				    notes = "Returns a 201 when successful.",
-				    consumes = MediaType.IMAGE_PNG_VALUE)
-	  @PostMapping("/uploadFile")
+				    consumes = MediaType.IMAGE_PNG_VALUE)	 
 	  public UploadResponse uploadFileDB(@RequestParam("file") MultipartFile file) {
-		    log.info("uploadFileDB...");
 	    	IDSLImageModel fileName = fileStorageService.storeFileToDatabase(file);
-	        String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-	                .path("/downloadFile/")
-	                .path(fileName.getFileName())
-	                .toUriString();
-	        return new UploadResponse(fileName.getFileName(), fileDownloadUri,
-	                                  file.getContentType(), file.getSize());
+	    	log.info("uploadFile=" + fileName);
+	        return new UploadResponse(fileName.getFileName(), file.getContentType(), file.getSize());
 	   }
-	  
-	   /*@ApiOperation(value = "Retrieve an image",
-			         notes = "Returns a 200 when successful.",
-			         consumes = MediaType.IMAGE_PNG_VALUE)
-       @GetMapping("/uploadFile")
-       public UploadResponse getFileDB(@RequestParam("file") MultipartFile file) {
-	        log.info("uploadFileDB...");
-    	    IDSLImageModel fileName = fileStorageService.storeFileToDatabase(file);
-            String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-                    .path("/downloadFile/")
-                    .path(fileName.getFileName())
-                    .toUriString();
-        return new UploadResponse(fileName.getFileName(), fileDownloadUri,
-                                  file.getContentType(), file.getSize());
-   }*/
 	    
 	   @PostMapping("/uploadMultipleFiles")
 	   @ApiOperation(value = "Uploads multiple images",
 		              notes = "Returns a 201 when successful.  Will overwrite pre-existing files with the same name.",
 		              consumes = MediaType.IMAGE_PNG_VALUE)
 	   public List<UploadResponse> uploadMultipleFilesDB(@RequestParam("files") MultipartFile[] files) {
-		    log.info("uploadMultipleFilesDB...");
+		    log.info("uploadMultipleFiles...");
 	        return Arrays.asList(files)
 	                .stream()
 	                .map(file -> uploadFileDB(file))
@@ -144,4 +97,20 @@ public class ImageController {
 	    	//compare the first two images
 	    	return matchingService.compareImages(images.get(0), images.get(1));  	
 	   }
+	   
+	   @GetMapping("/downloadFile/{fileName}")
+	   @ApiOperation(value = "Download images",
+		              notes = "Returns a 200 when successful.",
+		              consumes = MediaType.IMAGE_PNG_VALUE)
+	   public ResponseEntity<Resource> downloadFile(@PathVariable String fileName, HttpServletRequest request) {
+		   log.info("do we have an image named " + fileName + "?");
+		   IDSLImageModel image = fileStorageService.getFile(fileName);
+		   if (image != null) {
+			   log.info("image for filename exists!");
+		   }
+	       return ResponseEntity.ok()
+	                .contentType(MediaType.parseMediaType(image.getFileType()))
+	                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + image.getFileName() + "\"")
+	                .body(new ByteArrayResource(image.getData()));
+	    }   
 }
