@@ -14,7 +14,7 @@
 	<name>biometric-match</name>
 	<description>Rest api for biometric matching</description>
 	<properties>
-		<java.version>11</java.version>
+		<java.version>1.8</java.version>
 	</properties>
 	<dependencies>
     <dependency>
@@ -92,11 +92,6 @@
                       <goals>
                          <goal>repackage</goal>
                       </goals>
-                      <!-- <configuration>
-                         <mainClass>com.assessment.code.biometricmatch.BiometricMatchApplication.java</mainClass>
-                         <outputDirectory>${project.basedir}/docker</outputDirectory>
-                      </configuration>
-                      -->
                    </execution>
                 </executions>
 			</plugin>
