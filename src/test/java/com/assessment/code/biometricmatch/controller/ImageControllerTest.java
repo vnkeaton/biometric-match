@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -19,7 +20,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.assessment.code.biometricmatch.exception.EmptyFileException;
 import com.assessment.code.biometricmatch.model.MatchResponse;
 import com.assessment.code.biometricmatch.service.FileStorageService;
 import com.assessment.code.biometricmatch.service.MatchingService;
@@ -63,6 +66,31 @@ class ImageControllerTest {
         MockHttpServletResponse response = result.getResponse();
         assertEquals(HttpStatus.OK.value(), response.getStatus());
     }
+    
+    @Test
+    public void test_uploadFile_exception() throws Exception {
+    	
+    	String fileName = "1.png";
+        File file = new File(fileName);
+        //delete if exits
+        file.delete();
+
+        MockMultipartFile mockMultipartFile = new MockMultipartFile("file",fileName,
+        		MediaType.IMAGE_PNG_VALUE, "<<image1 data>>".getBytes());
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+				.multipart("/biometric/uploadFile")
+				.file(mockMultipartFile);
+        Mockito.doThrow(new EmptyFileException("Uploaded file is empty!"))
+		       .when(fileStorageService)
+		       .storeFile(Mockito.any(MultipartFile.class));
+
+        MvcResult result = mockMvc.perform(requestBuilder).andReturn();
+        MockHttpServletResponse response = result.getResponse();
+        assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
+    }
+    
+    
     
     //TODO need tests for upload exceptions
     

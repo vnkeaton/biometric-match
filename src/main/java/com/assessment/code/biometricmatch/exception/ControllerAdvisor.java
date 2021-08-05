@@ -21,23 +21,32 @@ public class ControllerAdvisor {
 	@ExceptionHandler(FileNotFoundException.class)
     public ResponseEntity<Object> handleFileNotFoundException(
     	        FileNotFoundException ex, WebRequest request) {
-
-        Map<String, Object> body = new LinkedHashMap<>();
-        body.put("timestamp", LocalDateTime.now());
-        body.put("message", ex.getMessage());
-
-        return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
+		return createExceptionBody(ex.getMessage());
     }
 	
 	@ExceptionHandler(FileStorageException.class)
     public ResponseEntity<Object> handleFileStorageException(
-    	FileStorageException ex, WebRequest request) {
-
-        Map<String, Object> body = new LinkedHashMap<>();
-        body.put("timestamp", LocalDateTime.now());
-        body.put("message", ex.getMessage());
-
-        return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
+    	          FileStorageException ex, WebRequest request) {
+        return createExceptionBody(ex.getMessage());
     }
+	
+	@ExceptionHandler(EmptyFileException.class)
+    public ResponseEntity<Object> handleEmptyFileException(
+    		      EmptyFileException ex, WebRequest request) {
+        return createExceptionBody(ex.getMessage());
+    }
+	
+	@ExceptionHandler(DatabaseConstraintException.class)
+    public ResponseEntity<Object> handleDatabaseConstraintException(
+    		      DatabaseConstraintException ex, WebRequest request) {
+        return createExceptionBody(ex.getMessage());
+    }
+
+	private ResponseEntity<Object> createExceptionBody(String message) {
+		Map<String, Object> body = new LinkedHashMap<>();
+        body.put("timestamp", LocalDateTime.now());
+        body.put("message", message);
+        return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
+	}
 
 }

@@ -10,9 +10,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.assessment.code.biometricmatch.exception.DatabaseConstraintException;
+import com.assessment.code.biometricmatch.exception.EmptyFileException;
 import com.assessment.code.biometricmatch.exception.FileNotFoundException;
 import com.assessment.code.biometricmatch.exception.FileStorageException;
-import com.assessment.code.biometricmatch.model.UploadResponse;
 import com.assessment.code.biometricmatch.model.IDSLImageModel;
 import com.assessment.code.biometricmatch.repository.IDSLImageRepository;
 
@@ -30,23 +31,32 @@ public class FileStorageServiceImpl implements FileStorageService{
 		}
 	    
 	@Override
-	 public IDSLImageModel storeFileToDatabase(MultipartFile file) {
+	 public IDSLImageModel storeFile(MultipartFile file) {
 			log.info("store file to database");
-			// Normalize file name
+			// Check for empty file and normalize file name
+			if (file.isEmpty()) {
+				throw new EmptyFileException("File is empty.  File name: "+ file.getName());
+			}
 	        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
 
-	        try {
-	            // Check if the file's name contains invalid characters
-	            if(fileName.contains("..")) {
-	                throw new FileStorageException("Sorry! Filename contains invalid path sequence " + fileName);
-	            }
-
-	            IDSLImageModel dbFile = new IDSLImageModel(fileName, file.getContentType(), BigInteger.valueOf(file.getSize()), file.getBytes());
-
-	            return imageRepository.save(dbFile);
-	        } catch (IOException ex) {
-	            throw new FileStorageException("Could not store file " + fileName + ". Please try again!", ex);
-	        }
+	        // Check if the file's name contains invalid characters
+	         if(fileName.contains("..")) {
+	            throw new FileStorageException("Sorry! Filename contains invalid path sequence " + fileName);
+	         } 
+	         IDSLImageModel dbFile;
+			 try {
+				dbFile = new IDSLImageModel(fileName, file.getContentType(), BigInteger.valueOf(file.getSize()), file.getBytes());
+			 } catch (IOException e1) {
+				throw new FileStorageException("Issues obtaining new instance for image: " + fileName);
+			 }	
+			
+			 IDSLImageModel savedImage = null;
+			 try {
+				 savedImage = imageRepository.save(dbFile);
+			 } catch(Exception e) {
+				 throw new DatabaseConstraintException("Issues saving image to database.  Check filename uniqueness.");
+			 }
+			 return savedImage;
 	    }
 	    
 		@Override

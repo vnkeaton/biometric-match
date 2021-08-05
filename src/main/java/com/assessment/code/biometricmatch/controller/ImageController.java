@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.assessment.code.biometricmatch.exception.EmptyFileException;
 import com.assessment.code.biometricmatch.exception.FileNotFoundException;
 import com.assessment.code.biometricmatch.model.IDSLImageModel;
 import com.assessment.code.biometricmatch.model.MatchResponse;
@@ -66,7 +67,10 @@ public class ImageController {
 				    notes = "Returns a 201 when successful.",
 				    consumes = MediaType.IMAGE_PNG_VALUE)	 
 	  public UploadResponse uploadFileDB(@RequestParam("file") MultipartFile file) {
-	    	IDSLImageModel fileName = fileStorageService.storeFileToDatabase(file);
+		    if (file.isEmpty()) {
+		    	throw new EmptyFileException("Uploaded file is empty");
+		    }
+	    	IDSLImageModel fileName = fileStorageService.storeFile(file);
 	    	log.info("uploadFile=" + fileName);
 	        return new UploadResponse(fileName.getFileName(), file.getContentType(), file.getSize());
 	   }
@@ -77,6 +81,9 @@ public class ImageController {
 		              consumes = MediaType.IMAGE_PNG_VALUE)
 	   public List<UploadResponse> uploadMultipleFilesDB(@RequestParam("files") MultipartFile[] files) {
 		    log.info("uploadMultipleFiles...");
+		    if (files.length == 0) {
+		    	throw new FileNotFoundException("There are no files to process.");
+		    }
 	        return Arrays.asList(files)
 	                .stream()
 	                .map(file -> uploadFileDB(file))
@@ -89,15 +96,19 @@ public class ImageController {
 		              consumes = MediaType.IMAGE_PNG_VALUE)
 	   public MatchResponse matchFiles(@RequestParam("files") MultipartFile[] files) {
 		    log.info("matchFiles...");
+		    if (files == null || files.length == 0) {
+		    	throw new FileNotFoundException("There are no files to process.");
+		    }
 	    	List<IDSLImageModel> images =  Arrays.asList(files)
 	                                         .stream()
-	                                         .map(file -> fileStorageService.storeFileToDatabase(file))
+	                                         .map(file -> fileStorageService.storeFile(file))                             
 	                                         .collect(Collectors.toList());
-	    	if (images.size() > 2) {
+	    	MatchResponse response = null;  
+	    	if (images.size() >= 2) {
 	    		log.info("Only comparing the first 2 files.");
+	    		response = matchingService.compareImages(images.get(0), images.get(1));  	
 	    	}
-	    	//compare the first two images
-	    	return matchingService.compareImages(images.get(0), images.get(1));  	
+	    	return response;  	
 	   }
 	   
 	   @GetMapping("/downloadFile/{fileName}")
@@ -105,7 +116,7 @@ public class ImageController {
 		              notes = "Returns a 200 when successful.",
 		              consumes = MediaType.IMAGE_PNG_VALUE)
 	   public ResponseEntity<Resource> downloadFile(@PathVariable String fileName, HttpServletRequest request) {
-		   log.info("do we have an image named " + fileName + "?");
+		   log.info("get image named " + fileName + "?");
 		   IDSLImageModel image = fileStorageService.getFile(fileName);
 	       return ResponseEntity.ok()
 	                .contentType(MediaType.parseMediaType(image.getFileType()))
@@ -122,5 +133,5 @@ public class ImageController {
 	       return fileStorageService.removeFile(fileName);
 	   }
 	   
-	   //TODO  Add Put and Delete to finish out CRUD functions
+	   //TODO Add Put to finish out CRUD functions
 }
