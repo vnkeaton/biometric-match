@@ -3,7 +3,7 @@ IDSL project - java rest api matching service
 
 Hello-  Thank you for the opportunity to participate in the SAIC Identity and Data Sciences Laboratory Code Assessment.
 
-This is a basic CRUD Spring boot REST api.  Howver, I am currently missing Update and Delete operations and hope to be able to swing back aournd to take care of those.
+This is a basic CRUD Spring boot REST api.  However, I am currently missing Update and Delete operations and hope to be able to swing back aournd to take care of those.
 Please note there is swagger documentation: http://localhost:8080/swagger-ui.html
 
 The REST layers are controller, service, and repository where controller houses the api endpoint.
