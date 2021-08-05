@@ -105,12 +105,11 @@ public class ImageController {
 	   public ResponseEntity<Resource> downloadFile(@PathVariable String fileName, HttpServletRequest request) {
 		   log.info("do we have an image named " + fileName + "?");
 		   IDSLImageModel image = fileStorageService.getFile(fileName);
-		   if (image != null) {
-			   log.info("image for filename exists!");
-		   }
 	       return ResponseEntity.ok()
 	                .contentType(MediaType.parseMediaType(image.getFileType()))
 	                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + image.getFileName() + "\"")
 	                .body(new ByteArrayResource(image.getData()));
 	    }   
+	   
+	   //TODO  Add Put and Delete to finish out CRUD functions
 }

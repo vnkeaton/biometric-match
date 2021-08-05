@@ -2,24 +2,15 @@ package com.assessment.code.biometricmatch.service;
 
 import java.io.IOException;
 import java.math.BigInteger;
-import java.net.MalformedURLException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.assessment.code.biometricmatch.controller.ImageController;
 import com.assessment.code.biometricmatch.exception.FileNotFoundException;
 import com.assessment.code.biometricmatch.exception.FileStorageException;
 import com.assessment.code.biometricmatch.model.IDSLImageModel;
-import com.assessment.code.biometricmatch.property.FileStorageProperties;
 import com.assessment.code.biometricmatch.repository.IDSLImageRepository;
 
 import lombok.extern.slf4j.Slf4j;
@@ -28,27 +19,15 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class FileStorageServiceImpl implements FileStorageService{
 
-	
-	 //private final Path fileStorageLocation;
+	 private final IDSLImageRepository imageRepository;
 	 
 	 @Autowired
-	 private IDSLImageRepository imageRepository;
-
-	   /* @Autowired
-	    public FileStorageServiceImpl(FileStorageProperties fileStorageProperties) {
-	        this.fileStorageLocation = Paths.get(fileStorageProperties.getUploadDir())
-	                .toAbsolutePath().normalize();
-
-	        try {
-	            Files.createDirectories(this.fileStorageLocation);
-	        } catch (Exception ex) {
-	            throw new FileStorageException("Could not create the directory where the uploaded files will be stored.", ex);
-	        }
-	    }
-	    */
+	 public FileStorageServiceImpl(IDSLImageRepository imageRepository) {
+			this.imageRepository = imageRepository;
+		}
 	    
-		@Override
-	    public IDSLImageModel storeFileToDatabase(MultipartFile file) {
+	@Override
+	 public IDSLImageModel storeFileToDatabase(MultipartFile file) {
 			log.info("store file to database");
 			// Normalize file name
 	        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
@@ -73,10 +52,9 @@ public class FileStorageServiceImpl implements FileStorageService{
 			log.info("get file: " + fileName);
 			IDSLImageModel image = imageRepository.findByFileName(fileName);
 			if (image == null) {
+				log.info("image not found");
 				throw new FileNotFoundException("File not found: " + fileName);
 			}
 			return image;
-			//return imageRepository.findByFileName(fileName)
-	        //        .orElseThrow(() -> new FileNotFoundException("File not found: " + fileName));
 		}
 }
