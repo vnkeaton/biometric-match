@@ -92,10 +92,11 @@
                       <goals>
                          <goal>repackage</goal>
                       </goals>
-                      <configuration>
+                      <!-- <configuration>
                          <mainClass>com.assessment.code.biometricmatch.BiometricMatchApplication.java</mainClass>
                          <outputDirectory>${project.basedir}/docker</outputDirectory>
                       </configuration>
+                      -->
                    </execution>
                 </executions>
 			</plugin>
