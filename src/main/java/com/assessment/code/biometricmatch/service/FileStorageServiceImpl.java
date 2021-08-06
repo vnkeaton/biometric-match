@@ -108,4 +108,11 @@ public class FileStorageServiceImpl implements FileStorageService{
 			}
 			return response;
 		}
+		
+		@Override
+		public boolean doesFileExist(String filename) {
+			log.info("does file exists: " + filename);
+			IDSLImageModel image =  imageRepository.findByFileName(filename);
+			return (image != null) ? true : false; 
+		}
 }
