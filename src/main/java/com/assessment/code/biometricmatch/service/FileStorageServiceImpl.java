@@ -86,7 +86,7 @@ public class FileStorageServiceImpl implements FileStorageService{
 				throw new FileStorageException("Trouble removing file: " + fileName);
 			}
 		    Map<String, Boolean> response = new HashMap<>();
-		    response.put("File Deleted Successfully, fileName: " + fileName, Boolean.TRUE);
+		    response.put("deleted: " + fileName, Boolean.TRUE);
 		    return response;
 		}
 
@@ -98,8 +98,14 @@ public class FileStorageServiceImpl implements FileStorageService{
 		}
 
 		@Override
-		public void removeAllFiles() {
+		public Map<String, Boolean> removeAllFiles() {
 			log.info("removing all files");
-			imageRepository.deleteAll();
+			Map<String, Boolean> response = new HashMap<>();
+			List<IDSLImageModel> images = getAllFiles();
+			for (IDSLImageModel image: images) {
+				Map<String, Boolean> map = removeFile(image.getFileName());
+				response.putAll(map);
+			}
+			return response;
 		}
 }

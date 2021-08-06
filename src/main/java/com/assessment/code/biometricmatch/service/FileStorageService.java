@@ -13,5 +13,5 @@ public interface FileStorageService {
 	Map<String, Boolean> removeFile(String fileName);
 	IDSLImageModel storeFile(MultipartFile file);
 	List<IDSLImageModel> getAllFiles();
-	void removeAllFiles();
+	Map<String, Boolean> removeAllFiles();
 }

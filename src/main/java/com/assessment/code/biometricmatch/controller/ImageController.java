@@ -154,9 +154,9 @@ public class ImageController {
 	   @DeleteMapping("/removeFile/all")
 	   @ApiOperation(value = "remove images",
                      notes = "Returns a 200 when successful.")
-	   public String deleteAllFiles() {
-	       log.info("delete all files");
-	       return "Files Deleted";
+	   public Map<String, Boolean> deleteAllFiles() {
+	       log.info("delete all files");    
+	       return fileStorageService.removeAllFiles();
 	   }
 	   
 	   //TODO Add Put to finish out CRUD operations
