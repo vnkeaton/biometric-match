@@ -94,11 +94,18 @@ public class ImageController {
 	   @ApiOperation(value = "Uploads images and creates a match score",
 		              notes = "Returns a 201 when successful.  Will overwrite pre-existing files with the same name.",
 		              consumes = MediaType.IMAGE_PNG_VALUE)
-	   public MatchResponse matchFiles(@RequestParam("files") MultipartFile[] files) {
+	   public MatchResponse matchFiles(@RequestParam("file1") MultipartFile file1,
+			                          @RequestParam("file2") MultipartFile file2) {
 		    log.info("matchFiles...");
-		    if (files == null || files.length == 0) {
-		    	throw new FileNotFoundException("There are no files to process.");
+		    MultipartFile[] files = new MultipartFile[2];
+		    if (file1 != null && !file1.isEmpty() && file2 != null && !file2.isEmpty()) {
+		    	files[0] = file1;
+		    	files[1] = file2;
 		    }
+		    else {
+		    	throw new EmptyFileException("2 image files are required for processing");
+		    }
+
 	    	List<IDSLImageModel> images =  Arrays.asList(files)
 	                                         .stream()
 	                                         .map(file -> fileStorageService.storeFile(file))                             
@@ -133,5 +140,5 @@ public class ImageController {
 	       return fileStorageService.removeFile(fileName);
 	   }
 	   
-	   //TODO Add Put to finish out CRUD functions
+	   //TODO Add Put to finish out CRUD operations
 }
