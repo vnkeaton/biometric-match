@@ -1,0 +1,14 @@
+#is docker running?
+docker run hello-world
+
+#if not, check the status
+systemctl status docker
+
+#to start docker
+sudo /etc/init.d/docker start
+
+#I added user groups to docker so I don't have to be sudo to run it
+sudo usermod -aG docker [username]
+#log out and back in to confirm the changes
+#found at /phoenixnap.com/kb/cannot-connect-to-the-docker daemon-error
+
