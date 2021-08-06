@@ -13,18 +13,12 @@ public class MatchResponse {
 	
 	private BigDecimal matchResult;
 	private String fileName1;
-	private String fileId1;
 	private String fileName2;
-	private String fileId2;
 	
-	public MatchResponse(BigDecimal matchResult, String fileName1, String fileId1, String fileName2, String fileId2) {
+	public MatchResponse(BigDecimal matchResult, String fileName1, String fileName2) {
 		super();
 		this.matchResult = matchResult;
 		this.fileName1 = fileName1;
-		this.fileId1 = fileId1;
 		this.fileName2 = fileName2;
-		this.fileId2 = fileId2;
-	}
-	
-
+	}	
 }

@@ -43,11 +43,15 @@ public class MatchingServiceImpl implements MatchingService {
 	@Transactional
 	public MatchResponse compareImages(IDSLImageModel image1, IDSLImageModel image2) {
         log.info("Comparing images:" + image1.getFileName() + ", " + image2.getFileName());
-		BigDecimal score = image1.getFileName().equals(image2.getFileName()) ? new BigDecimal(0.0) : getScore();
-		IDSLMatchScoreModel matchScore = new IDSLMatchScoreModel(image1, image2, score);
-		matchRepository.save(matchScore);		
-		return new MatchResponse(matchScore.getMatchScore(), image1.getFileName(), image1.getId(),
-				image2.getFileName(), image2.getId());
+        //check to see if these 2 files have already been compared
+        IDSLMatchScoreModel matchScoreModel = null;
+        matchScoreModel = doesFileExist(image1.getFileName(), image2.getFileName());
+        if (matchScoreModel == null) {
+        	BigDecimal score = image1.getFileName().equals(image2.getFileName()) ? new BigDecimal(0.0) : getScore();
+        	matchScoreModel = new IDSLMatchScoreModel(image1.getFileName(), image2.getFileName(), score);
+        	matchRepository.save(matchScoreModel);	
+        }
+		return new MatchResponse(matchScoreModel.getMatchScore(), image1.getFileName(), image2.getFileName());
 	}
 	
 	private BigDecimal getScore() {
@@ -69,5 +73,15 @@ public class MatchingServiceImpl implements MatchingService {
 		}
 		return images;
 	}
-
+	
+	private IDSLMatchScoreModel doesFileExist(String fileName1, String fileName2) {
+		log.info("does score exists for: " + fileName1 + " and " + fileName2);
+		IDSLMatchScoreModel matchScoreModel = null;
+		matchScoreModel =  matchRepository.findByFileName1AndFileName2(fileName1, fileName2);
+		if (matchScoreModel == null) {
+			matchScoreModel =  matchRepository.findByFileName1AndFileName2(fileName2, fileName1);
+		}
+		return matchScoreModel;
+	}
+	
 }

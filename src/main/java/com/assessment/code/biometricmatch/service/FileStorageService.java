@@ -14,5 +14,5 @@ public interface FileStorageService {
 	IDSLImageModel storeFile(MultipartFile file);
 	List<IDSLImageModel> getAllFiles();
 	Map<String, Boolean> removeAllFiles();
-	boolean doesFileExist(String filename);
+	boolean doesFileExist(String fileName);
 }

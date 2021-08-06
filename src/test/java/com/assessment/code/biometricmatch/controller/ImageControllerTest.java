@@ -44,9 +44,9 @@ class ImageControllerTest {
     private final File testFile1 = new File(basePath + "/1.png");
     private final File testFile2 = new File(basePath + "/2.png");
 
-    MatchResponse matchResponse = new MatchResponse(new BigDecimal("0.5"), "1.png", "id1", "2.png", "id2");
+    MatchResponse matchResponse = new MatchResponse(new BigDecimal("0.5"), "1.png", "2.png");
     
-    String expectedJson = "{\"matchResult\":\"0.5\",\"fileName1\":\"1.png\",\"fileId1\":\"id1\",\"fileName2\":\"2.png\",\"fileId2\":\"id2\"}";
+    String expectedJson = "{\"matchResult\":\"0.5\",\"fileName1\":\"1.png\",\"fileName2\":\"2.png\"}";
 
     @Test
     public void test_uploadFile_success() throws Exception {
