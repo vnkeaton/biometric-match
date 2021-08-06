@@ -3,6 +3,7 @@ package com.assessment.code.biometricmatch.service;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,5 +88,18 @@ public class FileStorageServiceImpl implements FileStorageService{
 		    Map<String, Boolean> response = new HashMap<>();
 		    response.put("File Deleted Successfully, fileName: " + fileName, Boolean.TRUE);
 		    return response;
+		}
+
+		@Override
+		public List<IDSLImageModel> getAllFiles() {
+			log.info("get all files");
+			List<IDSLImageModel> images = imageRepository.findAll();
+			return images;
+		}
+
+		@Override
+		public void removeAllFiles() {
+			log.info("removing all files");
+			imageRepository.deleteAll();
 		}
 }

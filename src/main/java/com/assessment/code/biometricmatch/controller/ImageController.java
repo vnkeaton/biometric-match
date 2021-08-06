@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -92,7 +93,7 @@ public class ImageController {
 	    
 	   @PostMapping("/match")
 	   @ApiOperation(value = "Uploads images and creates a match score",
-		              notes = "Returns a 201 when successful.  Will overwrite pre-existing files with the same name.",
+		              notes = "Returns a 200 when successful.  Will overwrite pre-existing files with the same name.",
 		              consumes = MediaType.IMAGE_PNG_VALUE)
 	   public MatchResponse matchFiles(@RequestParam("file1") MultipartFile file1,
 			                          @RequestParam("file2") MultipartFile file2) {
@@ -121,7 +122,7 @@ public class ImageController {
 	   @GetMapping("/downloadFile/{fileName}")
 	   @ApiOperation(value = "Download image",
 		              notes = "Returns a 200 when successful.",
-		              consumes = MediaType.IMAGE_PNG_VALUE)
+		              produces = MediaType.IMAGE_PNG_VALUE)
 	   public ResponseEntity<Resource> downloadFile(@PathVariable String fileName, HttpServletRequest request) {
 		   log.info("get image named " + fileName + "?");
 		   IDSLImageModel image = fileStorageService.getFile(fileName);
@@ -131,13 +132,31 @@ public class ImageController {
 	                .body(new ByteArrayResource(image.getData()));
 	    }   
 	   
+	   @GetMapping("/downloadFile/all")
+	   @ApiOperation(value = "Downloads all images in database",
+		              notes = "Returns a 200 when successful.",
+		              produces = MediaType.IMAGE_PNG_VALUE)
+	   public ResponseEntity<Iterable<IDSLImageModel>> downloadAllFiles(HttpServletRequest request) {
+		   log.info("get all images");
+		   List<IDSLImageModel> images = fileStorageService.getAllFiles();
+		   return new ResponseEntity<Iterable<IDSLImageModel>>(images, HttpStatus.OK);
+	    }   
+	   
 	   @DeleteMapping("/removeFile/{fileName}")
 	   @ApiOperation(value = "remove image",
                      notes = "Returns a 200 when successful.")
-	   public Map<String, Boolean> deleteile(@PathVariable(value = "fileName") String fileName)
+	   public Map<String, Boolean> deleteFile(@PathVariable(value = "fileName") String fileName)
 	                                          throws FileNotFoundException {
 	       log.info("delete filename: " + fileName);
 	       return fileStorageService.removeFile(fileName);
+	   }
+	   
+	   @DeleteMapping("/removeFile/all")
+	   @ApiOperation(value = "remove images",
+                     notes = "Returns a 200 when successful.")
+	   public String deleteAllFiles() {
+	       log.info("delete all files");
+	       return "Files Deleted";
 	   }
 	   
 	   //TODO Add Put to finish out CRUD operations
