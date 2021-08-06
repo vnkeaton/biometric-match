@@ -2,11 +2,13 @@ package com.assessment.code.biometricmatch.model;
 
 import java.math.BigInteger;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -26,6 +28,8 @@ public class IDSLImageModel {
 	@GenericGenerator(name = "uuid", strategy = "uuid2")
 	private String id;
 
+	@NotNull(message = "file name must not be null")
+	@Column(name = "file_name", unique = true)
 	private String fileName;
 
 	private String fileType;

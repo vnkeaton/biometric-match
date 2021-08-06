@@ -2,12 +2,16 @@ package com.assessment.code.biometricmatch.service;
 
 import java.io.IOException;
 import java.math.BigInteger;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.assessment.code.biometricmatch.exception.DatabaseConstraintException;
+import com.assessment.code.biometricmatch.exception.EmptyFileException;
 import com.assessment.code.biometricmatch.exception.FileNotFoundException;
 import com.assessment.code.biometricmatch.exception.FileStorageException;
 import com.assessment.code.biometricmatch.model.IDSLImageModel;
@@ -27,26 +31,34 @@ public class FileStorageServiceImpl implements FileStorageService{
 		}
 	    
 	@Override
-	 public IDSLImageModel storeFileToDatabase(MultipartFile file) {
+	 public IDSLImageModel storeFile(MultipartFile file) {
 			log.info("store file to database");
-			// Normalize file name
+			// Check for empty file and normalize file name
+			if (file.isEmpty()) {
+				throw new EmptyFileException("File is empty.  File name: "+ file.getName());
+			}
 	        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
 
-	        try {
-	            // Check if the file's name contains invalid characters
-	            if(fileName.contains("..")) {
-	                throw new FileStorageException("Sorry! Filename contains invalid path sequence " + fileName);
-	            }
-
-	            IDSLImageModel dbFile = new IDSLImageModel(fileName, file.getContentType(), BigInteger.valueOf(file.getSize()), file.getBytes());
-
-	            return imageRepository.save(dbFile);
-	        } catch (IOException ex) {
-	            throw new FileStorageException("Could not store file " + fileName + ". Please try again!", ex);
-	        }
+	        // Check if the file's name contains invalid characters
+	         if(fileName.contains("..")) {
+	            throw new FileStorageException("Sorry! Filename contains invalid path sequence " + fileName);
+	         } 
+	         IDSLImageModel dbFile;
+			 try {
+				dbFile = new IDSLImageModel(fileName, file.getContentType(), BigInteger.valueOf(file.getSize()), file.getBytes());
+			 } catch (IOException e1) {
+				throw new FileStorageException("Issues obtaining new instance for image: " + fileName);
+			 }	
+			
+			 IDSLImageModel savedImage = null;
+			 try {
+				 savedImage = imageRepository.save(dbFile);
+			 } catch(Exception e) {
+				 throw new DatabaseConstraintException("Issues saving image to database.  Check filename uniqueness.");
+			 }
+			 return savedImage;
 	    }
 	    
-
 		@Override
 		public IDSLImageModel getFile(String fileName) {
 			log.info("get file: " + fileName);
@@ -56,5 +68,24 @@ public class FileStorageServiceImpl implements FileStorageService{
 				throw new FileNotFoundException("File not found: " + fileName);
 			}
 			return image;
+		}
+		
+		@Override
+		public Map<String, Boolean> removeFile(String fileName) {
+			log.info("remove file: " + fileName);
+			IDSLImageModel image = null;
+			image = getFile(fileName);
+			if (image == null) {
+				throw new FileNotFoundException("File not found: " + fileName);
+			}
+			try {
+				imageRepository.delete(image);
+			}
+			catch(Exception e) {
+				throw new FileStorageException("Trouble removing file: " + fileName);
+			}
+		    Map<String, Boolean> response = new HashMap<>();
+		    response.put("File Deleted Successfully, fileName: " + fileName, Boolean.TRUE);
+		    return response;
 		}
 }
