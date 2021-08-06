@@ -12,3 +12,8 @@ sudo usermod -aG docker [username]
 #log out and back in to confirm the changes
 #found at /phoenixnap.com/kb/cannot-connect-to-the-docker daemon-error
 
+#what containers are running
+docker container ls
+
+#stop the container
+docker container stop [container name]
