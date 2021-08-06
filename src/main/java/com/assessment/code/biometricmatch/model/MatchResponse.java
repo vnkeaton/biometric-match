@@ -2,13 +2,11 @@ package com.assessment.code.biometricmatch.model;
 
 import java.math.BigDecimal;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import lombok.NonNull;
-import lombok.Value;
-
-@Value
+@Data
+@NoArgsConstructor
 public class MatchResponse {
 	
 	private BigDecimal matchResult;
