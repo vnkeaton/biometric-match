@@ -100,16 +100,12 @@ public class ImageController {
 	   @ApiOperation(value = "Uploads images and creates a match score",
 		              notes = "Returns a 200 when successful.",
 		              consumes = MediaType.IMAGE_PNG_VALUE)
-	   public MatchResponse matchFiles(@RequestParam("file1") MultipartFile file1,
-			                           @RequestParam("file2") MultipartFile file2) {
-		    log.info("match, file1: " + file1.getOriginalFilename() + " file2: " + file2.getOriginalFilename());
-		    MultipartFile[] files = new MultipartFile[2];
-		    if (file1 != null && !file1.isEmpty() && file2 != null && !file2.isEmpty()) {
-		    	files[0] = file1;
-		    	files[1] = file2;
-		    }
-		    else {
-		    	throw new EmptyFileException("2 image files are required for processing");
+	   public MatchResponse matchFiles(@RequestParam("files") MultipartFile[] files) {
+		    log.info("match");
+		    for (MultipartFile file: files) {
+		    	 if (file == null || file.isEmpty()) { 	
+		            throw new EmptyFileException("2 image files are required for processing");
+		         }
 		    }
 		    List<IDSLImageModel> images = matchingService.processMatchFiles(files); 
 	    	return matchingService.compareImages(images.get(0), images.get(1));  	    		
