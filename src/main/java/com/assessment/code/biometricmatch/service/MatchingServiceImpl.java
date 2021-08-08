@@ -4,13 +4,16 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.math3.random.RandomDataGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.assessment.code.biometricmatch.exception.FileStorageException;
 import com.assessment.code.biometricmatch.model.IDSLImageModel;
 import com.assessment.code.biometricmatch.model.IDSLMatchScoreModel;
 import com.assessment.code.biometricmatch.model.MatchResponse;
@@ -66,8 +69,9 @@ public class MatchingServiceImpl implements MatchingService {
 		List<IDSLImageModel> images = new ArrayList<IDSLImageModel>();
 		for (MultipartFile file: files) {
 			log.info("file is:" + file.getOriginalFilename());
-		    IDSLImageModel image = (fileStorageService.doesImageFileExist(file.getOriginalFilename()) ?
-				                   fileStorageService.getImageFile(file.getOriginalFilename()) :
+			String fname = parseFileName(file.getOriginalFilename());
+		    IDSLImageModel image = (fileStorageService.doesImageFileExist(fname) ?
+				                   fileStorageService.getImageFile(fname) :
 				                   fileStorageService.storeImageFile(file));
 		    images.add(image);
 		}
@@ -82,6 +86,13 @@ public class MatchingServiceImpl implements MatchingService {
 			matchScoreModel =  matchRepository.findByFileName1AndFileName2(fileName2, fileName1);
 		}
 		return matchScoreModel;
+	}
+	
+	private String parseFileName(String fileName) {
+         if(fileName.contains("..")) {
+            throw new FileStorageException("Sorry! Filename contains invalid path sequence " + fileName);
+         } 
+		 return FilenameUtils.getBaseName(fileName) + "." + FilenameUtils.getExtension(fileName);		
 	}
 	
 }

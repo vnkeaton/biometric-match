@@ -41,10 +41,11 @@ public class ImageFileStorageServiceImpl implements ImageFileStorageService{
 			}
 	        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
 
-	        // Check if the file's name contains invalid characters
+	        //Check if the file's name contains invalid characters
 	         if(fileName.contains("..")) {
 	            throw new FileStorageException("Sorry! Filename contains invalid path sequence " + fileName);
 	         } 
+	         //Separate directory from file for cleaner filnames since it's he unique index
 	         String baseDir = FilenameUtils.getPath(fileName);
 	         String baseFileName = FilenameUtils.getBaseName(fileName) + 
 	        		               "." + FilenameUtils.getExtension(fileName);
