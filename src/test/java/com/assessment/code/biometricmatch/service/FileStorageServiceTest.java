@@ -23,7 +23,7 @@ import com.assessment.code.biometricmatch.repository.IDSLImageRepository;
 @RunWith(SpringRunner.class)
 class FileStorageServiceTest {
 	
-	private final IDSLImageModel image1 = new IDSLImageModel("1.png", "PNG", new BigInteger("500"), "<<image1 data>>".getBytes());
+	private final IDSLImageModel image1 = new IDSLImageModel("dir", "1.png", "PNG", new BigInteger("500"), "<<image1 data>>".getBytes());
 	
 	@TestConfiguration
 	public static class FileStorageServiceTestConfig{

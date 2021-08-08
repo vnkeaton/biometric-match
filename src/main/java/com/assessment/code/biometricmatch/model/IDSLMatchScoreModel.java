@@ -32,10 +32,18 @@ public class IDSLMatchScoreModel {
 	@GenericGenerator(name = "uuid", strategy = "uuid2")
 	private String id;
 	
+	@Size(min = 1, max = 250, message="Invalid dir for file 1! Max length is 250 bytes")
+	@ApiModelProperty(notes = "dir for file 1 name")
+	private String dir1;
+	
 	@NotNull(message = "file name 1 can not be null")
 	@Size(min = 1, max = 250, message="Invalid name for file 1! Max length is 250 bytes")
 	@ApiModelProperty(notes = "file 1 name")
 	private String file1Name;
+	
+	@Size(min = 1, max = 250, message="Invalid dir for file 2! Max length is 250 bytes")
+	@ApiModelProperty(notes = "dir for file 2 name")
+	private String dir2;
 	
 	@NotNull(message = "file 2 name can not be null")
 	@Size(min = 1, max = 250, message="Invalid name for file 2! Max length is 250 bytes")
@@ -47,9 +55,11 @@ public class IDSLMatchScoreModel {
 	@Digits(integer = 10, fraction = 12, message = "Score has format 10.12")
 	private BigDecimal matchScore;
 
-	public IDSLMatchScoreModel(String file1Name, String file2Name, BigDecimal matchScore) {
+	public IDSLMatchScoreModel(String dir1, String file1Name, String dir2, String file2Name, BigDecimal matchScore) {
 		super();
+		this.dir1 = dir1;
 		this.file1Name = file1Name;
+		this.dir2 = dir2;
 		this.file2Name = file2Name;
 		this.matchScore = matchScore;
 	}

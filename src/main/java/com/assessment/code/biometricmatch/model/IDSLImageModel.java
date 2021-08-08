@@ -9,10 +9,12 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.GenericGenerator;
 
 import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -27,6 +29,10 @@ public class IDSLImageModel {
 	@GeneratedValue(generator = "uuid")
 	@GenericGenerator(name = "uuid", strategy = "uuid2")
 	private String id;
+	
+	@Size(min = 1, max = 250, message="Invalid dir for file! Max length is 250 bytes")
+	@ApiModelProperty(notes = "dir for file name")
+	private String dir;
 
 	@NotNull(message = "file name must not be null")
 	@Column(name = "file_name", unique = true)
@@ -39,8 +45,9 @@ public class IDSLImageModel {
 	@Lob
 	private byte[] data;
 
-	public IDSLImageModel(String fileName, String fileType, BigInteger size, byte[] data) {
+	public IDSLImageModel(String dir, String fileName, String fileType, BigInteger size, byte[] data) {
 		super();
+		this.dir = dir;
 		this.fileName = fileName;
 		this.fileType = fileType;
 		this.size = size;

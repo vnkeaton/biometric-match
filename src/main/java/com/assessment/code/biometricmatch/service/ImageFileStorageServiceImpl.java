@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -44,9 +45,12 @@ public class ImageFileStorageServiceImpl implements ImageFileStorageService{
 	         if(fileName.contains("..")) {
 	            throw new FileStorageException("Sorry! Filename contains invalid path sequence " + fileName);
 	         } 
+	         String baseDir = FilenameUtils.getPath(fileName);
+	         String baseFileName = FilenameUtils.getBaseName(fileName) + 
+	        		               "." + FilenameUtils.getExtension(fileName);
 	         IDSLImageModel dbFile;
 			 try {
-				dbFile = new IDSLImageModel(fileName, file.getContentType(), BigInteger.valueOf(file.getSize()), file.getBytes());
+				dbFile = new IDSLImageModel(baseDir, baseFileName, file.getContentType(), BigInteger.valueOf(file.getSize()), file.getBytes());
 			 } catch (IOException e1) {
 				throw new FileStorageException("Issues obtaining new instance for image: " + fileName);
 			 }	

@@ -48,7 +48,7 @@ public class MatchingServiceImpl implements MatchingService {
         matchScoreModel = doesFileExist(image1.getFileName(), image2.getFileName());
         if (matchScoreModel == null) {
         	BigDecimal score = image1.getFileName().equals(image2.getFileName()) ? new BigDecimal(0.0) : getScore();
-        	matchScoreModel = new IDSLMatchScoreModel(image1.getFileName(), image2.getFileName(), score);
+        	matchScoreModel = new IDSLMatchScoreModel(image1.getDir(), image1.getFileName(), image2.getDir(), image2.getFileName(), score);
         	matchRepository.save(matchScoreModel);	
         }
 		return new MatchResponse(matchScoreModel.getMatchScore(), image1.getFileName(), image2.getFileName());
