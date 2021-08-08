@@ -82,9 +82,10 @@ public class MatchingServiceImpl implements MatchingService {
 		log.info("does score exists for: " + fileName1 + " and " + fileName2);
 		IDSLMatchScoreModel matchScoreModel = null;
 		matchScoreModel =  matchRepository.findByFileName1AndFileName2(fileName1, fileName2);
-		if (matchScoreModel == null) {
+		//Only if we assume the match operation is symmetric
+		/*if (matchScoreModel == null) {
 			matchScoreModel =  matchRepository.findByFileName1AndFileName2(fileName2, fileName1);
-		}
+		}*/
 		return matchScoreModel;
 	}
 	
