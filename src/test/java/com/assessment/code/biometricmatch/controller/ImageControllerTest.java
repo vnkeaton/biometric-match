@@ -24,7 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.assessment.code.biometricmatch.exception.EmptyFileException;
 import com.assessment.code.biometricmatch.model.MatchResponse;
-import com.assessment.code.biometricmatch.service.FileStorageService;
+import com.assessment.code.biometricmatch.service.ImageFileStorageService;
 import com.assessment.code.biometricmatch.service.MatchingService;
 
 @RunWith(SpringRunner.class)
@@ -38,7 +38,7 @@ class ImageControllerTest {
     MatchingService matchingService;
     
     @MockBean
-    FileStorageService fileStorageService;
+    ImageFileStorageService fileStorageService;
     
     private final String basePath = "src/test/resources/testFiles";
     private final File testFile1 = new File(basePath + "/1.png");
@@ -83,7 +83,7 @@ class ImageControllerTest {
 				.file(mockMultipartFile);
         Mockito.doThrow(new EmptyFileException("Uploaded file is empty!"))
 		       .when(fileStorageService)
-		       .storeFile(Mockito.any(MultipartFile.class));
+		       .storeImageFile(Mockito.any(MultipartFile.class));
 
         MvcResult result = mockMvc.perform(requestBuilder).andReturn();
         MockHttpServletResponse response = result.getResponse();

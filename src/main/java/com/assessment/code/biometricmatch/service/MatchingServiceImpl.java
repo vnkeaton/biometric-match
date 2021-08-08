@@ -24,11 +24,11 @@ import lombok.extern.slf4j.Slf4j;
 public class MatchingServiceImpl implements MatchingService {
 	
 	private final IDSLMatchScoreRepository matchRepository;
-	private final FileStorageService fileStorageService;
+	private final ImageFileStorageService fileStorageService;
 	 
 	 @Autowired
 	 public MatchingServiceImpl(IDSLMatchScoreRepository matchRepository,
-			                    FileStorageService fileStorageService) {
+			                    ImageFileStorageService fileStorageService) {
 			this.matchRepository = matchRepository;
 			this.fileStorageService = fileStorageService;
 		}
@@ -66,9 +66,9 @@ public class MatchingServiceImpl implements MatchingService {
 		List<IDSLImageModel> images = new ArrayList<IDSLImageModel>();
 		for (MultipartFile file: files) {
 			log.info("file is:" + file.getOriginalFilename());
-		    IDSLImageModel image = (fileStorageService.doesFileExist(file.getOriginalFilename()) ?
-				                   fileStorageService.getFile(file.getOriginalFilename()) :
-				                   fileStorageService.storeFile(file));
+		    IDSLImageModel image = (fileStorageService.doesImageFileExist(file.getOriginalFilename()) ?
+				                   fileStorageService.getImageFile(file.getOriginalFilename()) :
+				                   fileStorageService.storeImageFile(file));
 		    images.add(image);
 		}
 		return images;

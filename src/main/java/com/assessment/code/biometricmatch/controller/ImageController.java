@@ -28,7 +28,7 @@ import com.assessment.code.biometricmatch.exception.FileNotFoundException;
 import com.assessment.code.biometricmatch.model.IDSLImageModel;
 import com.assessment.code.biometricmatch.model.MatchResponse;
 import com.assessment.code.biometricmatch.model.UploadResponse;
-import com.assessment.code.biometricmatch.service.FileStorageService;
+import com.assessment.code.biometricmatch.service.ImageFileStorageService;
 import com.assessment.code.biometricmatch.service.MatchingService;
 
 import io.swagger.annotations.Api;
@@ -37,46 +37,30 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
-@Api(value = "biometric", tags = {"biometric Endpoints"})
-@RequestMapping("/biometric")
+@Api(value = "biometric", tags = {"biometric Image Endpoints"})
+@RequestMapping("/biometric/image")
 public class ImageController {
 	
 	private final MatchingService matchingService;
-	private final FileStorageService fileStorageService;
+	private final ImageFileStorageService fileStorageService;
 	
 	@Autowired
 	public ImageController(MatchingService matchingService,
-			               FileStorageService fileStorageService) {
+			               ImageFileStorageService fileStorageService) {
 		this.matchingService = matchingService;
 		this.fileStorageService = fileStorageService;
 	}
-	
-	 @GetMapping("/hello/{name}")
-	 @ApiOperation(value = "Hello name",
-     notes = "Returns a 200 when successful.")
-	 public String hello(@PathVariable("name") String name) {
-	        log.info("Hello, name: " + name);
-	        return "Hello " + name;
-	 }
-	 
-	 @GetMapping("/hello")
-	 @ApiOperation(value = "Hello world test",
-     notes = "Returns a 200 when successful.")
-	 public String helloWorld() {
-	        log.info("Hello...");
-	        return "Hello World!";
-	 }
 	 
 	 @PostMapping("/uploadFile")   
 	 @ApiOperation(value = "Uploads an image",
 				    notes = "Returns a 201 when successful.",
 				    consumes = MediaType.IMAGE_PNG_VALUE)	 
-	  public UploadResponse uploadFileDB(@RequestParam("file") MultipartFile file) {
-		    log.info("uploadFileDB, file: " + file.getName());
+	  public UploadResponse uploadFile(@RequestParam("file") MultipartFile file) {
+		    log.info("image uploadFileDB, file: " + file.getName());
 		    if (file.isEmpty()) {
 		    	throw new EmptyFileException("Uploaded file is empty");
 		    }
-	    	IDSLImageModel fileName = fileStorageService.storeFile(file);
+	    	IDSLImageModel fileName = fileStorageService.storeImageFile(file);
 	    	log.info("uploadFile=" + fileName);
 	        return new UploadResponse(fileName.getFileName(), file.getContentType(), file.getSize());
 	   }
@@ -85,14 +69,14 @@ public class ImageController {
 	   @ApiOperation(value = "Uploads multiple images",
 		              notes = "Returns a 201 when successful.  Will overwrite pre-existing files with the same name.",
 		              consumes = MediaType.IMAGE_PNG_VALUE)
-	   public List<UploadResponse> uploadMultipleFilesDB(@RequestParam("files") MultipartFile[] files) {
-		    log.info("uploadMultipleFiles...");
+	   public List<UploadResponse> uploadMultipleFiles(@RequestParam("files") MultipartFile[] files) {
+		    log.info("image uploadMultipleFiles...");
 		    if (files.length == 0) {
 		    	throw new FileNotFoundException("There are no files to process.");
 		    }
 	        return Arrays.asList(files)
 	                .stream()
-	                .map(file -> uploadFileDB(file))
+	                .map(file -> uploadFile(file))
 	                .collect(Collectors.toList());
 	   }
 	    
@@ -101,7 +85,7 @@ public class ImageController {
 		              notes = "Returns a 200 when successful.",
 		              consumes = MediaType.IMAGE_PNG_VALUE)
 	   public MatchResponse matchFiles(@RequestParam("files") MultipartFile[] files) {
-		    log.info("match");
+		    log.info("image match");
 		    for (MultipartFile file: files) {
 		    	 if (file == null || file.isEmpty()) { 	
 		            throw new EmptyFileException("2 image files are required for processing");
@@ -112,12 +96,12 @@ public class ImageController {
 	   }
 	   
 	   @GetMapping("/downloadFile/{fileName}")
-	   @ApiOperation(value = "Download image",
+	   @ApiOperation(value = "Download an image",
 		              notes = "Returns a 200 when successful.",
 		              produces = MediaType.IMAGE_PNG_VALUE)
 	   public ResponseEntity<Resource> downloadFile(@PathVariable String fileName, HttpServletRequest request) {
-		   log.info("downloadFile, filename: " + fileName);
-		   IDSLImageModel image = fileStorageService.getFile(fileName);
+		   log.info("image downloadFile, filename: " + fileName);
+		   IDSLImageModel image = fileStorageService.getImageFile(fileName);
 	       return ResponseEntity.ok()
 	                .contentType(MediaType.parseMediaType(image.getFileType()))
 	                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + image.getFileName() + "\"")
@@ -125,11 +109,11 @@ public class ImageController {
 	    }   
 	   
 	   @GetMapping("/downloadFile/all")
-	   @ApiOperation(value = "Downloads all images in database",
+	   @ApiOperation(value = "Downloads all images rows from database",
 		              notes = "Returns a 200 when successful.",
 		              produces = MediaType.IMAGE_PNG_VALUE)
 	   public ResponseEntity<Iterable<IDSLImageModel>> downloadAllFiles(HttpServletRequest request) {
-		   log.info("downloadAllFiles...");
+		   log.info("image downloadAllFiles...");
 		   List<IDSLImageModel> images = fileStorageService.getAllFiles();
 		   return new ResponseEntity<Iterable<IDSLImageModel>>(images, HttpStatus.OK);
 	    }   
@@ -139,17 +123,17 @@ public class ImageController {
                      notes = "Returns a 200 when successful.")
 	   public Map<String, Boolean> deleteFile(@PathVariable(value = "fileName") String fileName)
 	                                          throws FileNotFoundException {
-	       log.info("deleteFile, filename: " + fileName);
-	       return fileStorageService.removeFile(fileName);
+	       log.info("image deleteFile, filename: " + fileName);
+	       return fileStorageService.removeImageFile(fileName);
 	   }
 	   
 	   @DeleteMapping("/removeFile/all")
 	   @ApiOperation(value = "remove images",
                      notes = "Returns a 200 when successful.")
 	   public Map<String, Boolean> deleteAllFiles() {
-		   log.info("deleteAllFiles..."); 
-	       return fileStorageService.removeAllFiles();
+		   log.info("image deleteAllFiles..."); 
+	       return fileStorageService.removeAllImageFiles();
 	   }
 	   
-	   //TODO Add Put to finish out CRUD operations
+	   //TODO Add Put to finish out CRUD operations?
 }

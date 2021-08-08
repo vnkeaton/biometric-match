@@ -22,18 +22,18 @@ import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
-public class FileStorageServiceImpl implements FileStorageService{
+public class ImageFileStorageServiceImpl implements ImageFileStorageService{
 
 	 private final IDSLImageRepository imageRepository;
 	 
 	 @Autowired
-	 public FileStorageServiceImpl(IDSLImageRepository imageRepository) {
+	 public ImageFileStorageServiceImpl(IDSLImageRepository imageRepository) {
 			this.imageRepository = imageRepository;
 		}
 	    
 	@Override
-	 public IDSLImageModel storeFile(MultipartFile file) {
-			log.info("store file to database");
+	 public IDSLImageModel storeImageFile(MultipartFile file) {
+			log.info("store image file to database");
 			// Check for empty file and normalize file name
 			if (file.isEmpty()) {
 				throw new EmptyFileException("File is empty.  File name: "+ file.getName());
@@ -61,8 +61,8 @@ public class FileStorageServiceImpl implements FileStorageService{
 	    }
 	    
 		@Override
-		public IDSLImageModel getFile(String fileName) {
-			log.info("get file: " + fileName);
+		public IDSLImageModel getImageFile(String fileName) {
+			log.info("get image file: " + fileName);
 			IDSLImageModel image = imageRepository.findByFileName(fileName);
 			if (image == null) {
 				log.info("image not found");
@@ -72,10 +72,10 @@ public class FileStorageServiceImpl implements FileStorageService{
 		}
 		
 		@Override
-		public Map<String, Boolean> removeFile(String fileName) {
-			log.info("remove file: " + fileName);
+		public Map<String, Boolean> removeImageFile(String fileName) {
+			log.info("remove image file: " + fileName);
 			IDSLImageModel image = null;
-			image = getFile(fileName);
+			image = getImageFile(fileName);
 			if (image == null) {
 				throw new FileNotFoundException("File not found: " + fileName);
 			}
@@ -98,20 +98,20 @@ public class FileStorageServiceImpl implements FileStorageService{
 		}
 
 		@Override
-		public Map<String, Boolean> removeAllFiles() {
-			log.info("removing all files");
+		public Map<String, Boolean> removeAllImageFiles() {
+			log.info("removing all image files");
 			Map<String, Boolean> response = new HashMap<>();
 			List<IDSLImageModel> images = getAllFiles();
 			for (IDSLImageModel image: images) {
-				Map<String, Boolean> map = removeFile(image.getFileName());
+				Map<String, Boolean> map = removeImageFile(image.getFileName());
 				response.putAll(map);
 			}
 			return response;
 		}
 		
 		@Override
-		public boolean doesFileExist(String fileName) {
-			log.info("does file exists: " + fileName);
+		public boolean doesImageFileExist(String fileName) {
+			log.info("does image file exists: " + fileName);
 			IDSLImageModel image =  imageRepository.findByFileName(fileName);
 			return (image != null) ? true : false; 
 		}

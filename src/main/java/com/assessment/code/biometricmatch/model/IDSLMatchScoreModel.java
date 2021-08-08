@@ -6,7 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
+import javax.persistence.Index;
 import javax.persistence.Table;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
@@ -22,7 +22,8 @@ import lombok.NoArgsConstructor;
 @Data
 @Entity
 @NoArgsConstructor
-@Table(name="idsl_match_scores")
+@Table(name="idsl_match_scores",
+       indexes = {@Index( name="uniqueFNIndex", columnList = "file1Name,file2Name", unique = true)})
 @ApiModel(value = "IDSL Match Score Model", description = "Model for persisting match scores.")
 public class IDSLMatchScoreModel {
 	

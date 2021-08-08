@@ -28,8 +28,8 @@ class FileStorageServiceTest {
 	@TestConfiguration
 	public static class FileStorageServiceTestConfig{
 		@Bean
-		public FileStorageService fileStorageService(IDSLImageRepository imageRepository){
-			return new FileStorageServiceImpl(imageRepository);
+		public ImageFileStorageService fileStorageService(IDSLImageRepository imageRepository){
+			return new ImageFileStorageServiceImpl(imageRepository);
 		}
 	}
 	
@@ -37,14 +37,14 @@ class FileStorageServiceTest {
 	private IDSLImageRepository imageRepository;
 	
 	@Autowired
-	private FileStorageService fileStorageService;
+	private ImageFileStorageService fileStorageService;
 
 	//@Test
 	//TODO - fix this
 	@Ignore
 	void test_getFile_success() {
 		Mockito.when(imageRepository.findByFileName(Mockito.anyString())).thenReturn(image1);
-		IDSLImageModel response = fileStorageService.getFile("1.png");
+		IDSLImageModel response = fileStorageService.getImageFile("1.png");
 		assertEquals(image1.getFileName(), response.getFileName());		
 	}
 	
@@ -57,7 +57,7 @@ class FileStorageServiceTest {
 		             thenThrow(new FileNotFoundException("File not found: 1.png"));
 		IDSLImageModel response = null;
 		try {
-		   response = fileStorageService.getFile("1.png");
+		   response = fileStorageService.getImageFile("1.png");
 		}
 		catch(Exception e) {
 			assertTrue(e instanceof FileNotFoundException);
