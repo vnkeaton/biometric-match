@@ -17,14 +17,14 @@ The build-java sh ($chmod +x build-java) will build the REST application as biom
 The build-docker sh ($chmod +x build-docker) will build a docker image and runs the application in the docker container.
 The clg sh ($chmod +x clg) will build the REST application, build the docker image, and run the docker container.  (this is the one to run.)
 
-I used PostMan for testing.  (see post json exported file: biometric-match-api.postman_collection.json)
+I used PostMan for testing.  (See Postman json exported file: biometric-match-api.postman_collection.json)
 
-POST http://localhost:8080/biometric/match?=files where the body contains:
+Example: POST http://localhost:8080/biometric/match?=files where the body contains:
 key=files, value=1.png
 key=files, value=2.png
 (Note, key type is "file".)
 
-GET http://localhost:8080/biometric/downloadFile/{fileName} will simply retrieve any file posted from the database to display.
+Example: GET http://localhost:8080/biometric/downloadFile/{fileName} will simply retrieve any file posted from the database to display.
 (example: http://localhost:8080/biometric/downloadFile/1.png)
 
 This REST app will be consumed by the match-run Go application utilizing the biometric-match-client.
