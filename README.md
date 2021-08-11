@@ -13,9 +13,11 @@ When running locally, the H2 database is viewed via http://localhost:8080/h2-con
 The application is configured to create a docker image.
 
 TO RUN: 
--The build-java sh ($chmod +x build-java) will build the REST application as biometric-match-0.0.1-SNAPSHOT.jar.
--The build-docker sh ($chmod +x build-docker) will build a docker image and runs the application in the docker container.
--The clg sh ($chmod +x clg) will build the REST application, build the docker image, and run the docker container.  (this is the one to run.)
+The build-java sh ($chmod +x build-java) will build the REST application as biometric-match-0.0.1-SNAPSHOT.jar.
+
+The build-docker sh ($chmod +x build-docker) will build a docker image and runs the application in the docker container.
+
+The clg sh ($chmod +x clg) will build the REST application, build the docker image, and run the docker container.  (this is the one to run.)
 
 I used PostMan for testing.  (see post json exported file: biometric-match-api.postman_collection.json)
 
