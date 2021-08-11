@@ -5,7 +5,7 @@ This is a basic CRUD Spring boot REST api.  Please note there is swagger documen
 
 The REST layers are controller, service, and repository where controller houses the api endpoints.
 The function of interest is the POST operation for ~/biometric/image/match where the body accepts an array of image files, "files".  
-The operation will compare the first 2 files in the array utilizing a random number generator and return a match score between 0-10
+The operation will compare the first 2 files in the array utilizing a random number generator and return a match score between 0-10.
 The files are uploaded to an H2 (in memory) database.  This allows a client to consume all match scores once match posting is complete.  The match score information endpoint is ~/biometric/matchscore/downloadFile/all endpoint.
 
 When running locally, the H2 database is viewed via http://localhost:8080/h2-console 
