@@ -24,7 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.assessment.code.biometricmatch.exception.EmptyFileException;
 import com.assessment.code.biometricmatch.model.MatchResponse;
-import com.assessment.code.biometricmatch.service.FileStorageService;
+import com.assessment.code.biometricmatch.service.ImageFileStorageService;
 import com.assessment.code.biometricmatch.service.MatchingService;
 
 @RunWith(SpringRunner.class)
@@ -38,15 +38,15 @@ class ImageControllerTest {
     MatchingService matchingService;
     
     @MockBean
-    FileStorageService fileStorageService;
+    ImageFileStorageService fileStorageService;
     
     private final String basePath = "src/test/resources/testFiles";
     private final File testFile1 = new File(basePath + "/1.png");
     private final File testFile2 = new File(basePath + "/2.png");
 
-    MatchResponse matchResponse = new MatchResponse(new BigDecimal("0.5"), "1.png", "id1", "2.png", "id2");
+    MatchResponse matchResponse = new MatchResponse(new BigDecimal("0.5"), "1.png", "2.png");
     
-    String expectedJson = "{\"matchResult\":\"0.5\",\"fileName1\":\"1.png\",\"fileId1\":\"id1\",\"fileName2\":\"2.png\",\"fileId2\":\"id2\"}";
+    String expectedJson = "{\"matchResult\":\"0.5\",\"fileName1\":\"1.png\",\"fileName2\":\"2.png\"}";
 
     @Test
     public void test_uploadFile_success() throws Exception {
@@ -83,7 +83,7 @@ class ImageControllerTest {
 				.file(mockMultipartFile);
         Mockito.doThrow(new EmptyFileException("Uploaded file is empty!"))
 		       .when(fileStorageService)
-		       .storeFile(Mockito.any(MultipartFile.class));
+		       .storeImageFile(Mockito.any(MultipartFile.class));
 
         MvcResult result = mockMvc.perform(requestBuilder).andReturn();
         MockHttpServletResponse response = result.getResponse();
