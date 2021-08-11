@@ -1,0 +1,394 @@
+{
+	"info": {
+		"_postman_id": "dc5f865e-8f2e-43a7-89b7-3055a5de28c2",
+		"name": "biometric-match-api",
+		"description": "Biometric-match API tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "health",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/actuator/health",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"actuator",
+						"health"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "swagger docs",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/v2/api-docs",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v2",
+						"api-docs"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "hello",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "",
+							"type": "file",
+							"src": "/C:/Training/1.png"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/biometric/hello/viki",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"biometric",
+						"hello",
+						"viki"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "match images file1 file2",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "files",
+							"type": "file",
+							"src": "/C:/IDSL/mdtf-public/rally2-matching-system/tests/test-routine-images/face/1.png"
+						},
+						{
+							"key": "files",
+							"type": "file",
+							"src": "/C:/IDSL/mdtf-public/rally2-matching-system/tests/test-routine-images/face/2.png"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/biometric/image/match",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"biometric",
+						"image",
+						"match"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get images",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "files",
+							"type": "file",
+							"src": "/C:/Training/1.png"
+						},
+						{
+							"key": "files",
+							"type": "file",
+							"src": "/C:/Training/2.png"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/biometric/image/downloadFile/1.png",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"biometric",
+						"image",
+						"downloadFile",
+						"1.png"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get ALL images",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "files",
+							"type": "file",
+							"src": "/C:/Training/1.png"
+						},
+						{
+							"key": "files",
+							"type": "file",
+							"src": "/C:/Training/2.png"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/biometric/image/downloadFile/all",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"biometric",
+						"image",
+						"downloadFile",
+						"all"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "remove images",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "files",
+							"type": "file",
+							"src": "/C:/Training/1.png"
+						},
+						{
+							"key": "files",
+							"type": "file",
+							"src": "/C:/Training/2.png"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/biometric/image/removeFile/2.png",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"biometric",
+						"image",
+						"removeFile",
+						"2.png"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "remove All images",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "files",
+							"type": "file",
+							"src": "/C:/Training/1.png"
+						},
+						{
+							"key": "files",
+							"type": "file",
+							"src": "/C:/Training/2.png"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/biometric/removeFile/All/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"biometric",
+						"removeFile",
+						"All",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "upload 1 image file",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/C:/IDSL/mdtf-public/rally2-matching-system/tests/test-routine-images/face/3.png"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/biometric/uploadFile",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"biometric",
+						"uploadFile"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get all matchscore",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/biometric/matchscore/downloadFile/all",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"biometric",
+						"matchscore",
+						"downloadFile",
+						"all"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get matchscore",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/biometric/matchscore/downloadFile/all",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"biometric",
+						"matchscore",
+						"downloadFile",
+						"all"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "remove matchscore",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/biometric/matchscore/removeFile/6.png/1.png",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"biometric",
+						"matchscore",
+						"removeFile",
+						"6.png",
+						"1.png"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "remove ALL  matchscore",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/biometric/matchscore/removeFile/6.png/1.png",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"biometric",
+						"matchscore",
+						"removeFile",
+						"6.png",
+						"1.png"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
